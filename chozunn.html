@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chozun🌻</title>
+    <style>
+        body {
+            margin: 0;
+            height: 100vh;
+            background-color: black;
+            overflow: hidden;
+            color: white; /* Màu chữ */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Arial', sans-serif; /* Phông chữ */
+        }
+
+        #icon-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 1; /* Đặt icon trên nền */
+        }
+
+        .icon {
+            position: absolute;
+            opacity: 0; /* Bắt đầu với độ mờ */
+            font-size: 24px; /* Kích thước biểu tượng */
+            transition: opacity 0.5s ease; /* Hiệu ứng chuyển đổi độ mờ */
+        }
+
+        @keyframes float {
+            0% {
+                transform: scale(1) translate(0, 0);
+                opacity: 1;
+            }
+            50% {
+                transform: scale(1.5) translate(10px, -10px); /* Phóng to và di chuyển nhẹ */
+            }
+            100% {
+                transform: scale(1) translate(0, 0);
+                opacity: 0; /* Kết thúc với độ mờ */
+            }
+        }
+
+        .text {
+            position: absolute;
+            font-size: 48px; /* Kích thước chữ */
+            font-weight: bold; /* Đậm */
+            border-radius: 10px; /* Bo tròn */
+            opacity: 0; /* Bắt đầu với độ mờ */
+            animation: fadeInOut 3s forwards; /* Hiệu ứng mờ ảo */
+            z-index: 2; /* Đặt chữ lên trên cùng */
+            text-align: center; /* Canh giữa chữ */
+        }
+
+        @keyframes fadeInOut {
+            0% {
+                transform: scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="icon-container"></div>
+    <script>
+        const iconContainer = document.getElementById('icon-container');
+
+        const icons = ["😊", "😍", "🥰", "😻", "💐", "💖", "😍", "💕", "🌻", "💗"]; // Danh sách biểu tượng
+        const texts = ['zun', 'xing', 'nhat', 'vui']; // Danh sách chữ
+        let textIndex = 0; // Chỉ số để theo dõi chữ hiện tại
+
+        function randomPosition() {
+            const x = Math.random() * (window.innerWidth - 100); // Trừ đi 100 để tránh ra ngoài màn hình
+            const y = Math.random() * (window.innerHeight - 50); // Trừ đi 50 để tránh ra ngoài màn hình
+            return { x, y };
+        }
+
+        function createIcon() {
+            const icon = document.createElement('div');
+            icon.className = 'icon';
+            icon.textContent = icons[Math.floor(Math.random() * icons.length)];
+            
+            const { x, y } = randomPosition();
+            icon.style.left = `${x}px`;
+            icon.style.top = `${y}px`;
+            icon.style.opacity = 1; // Hiện biểu tượng
+
+            // Thêm icon vào container
+            iconContainer.appendChild(icon);
+
+            // Thêm animation
+            const duration = Math.random() * 2 + 2; // Thời gian di chuyển ngẫu nhiên từ 2 đến 4 giây
+            icon.style.transition = `transform ${duration}s ease-in-out, opacity ${duration}s ease-in-out`;
+            icon.style.animation = `float ${duration}s forwards`; // Áp dụng animation
+
+            // Di chuyển ngẫu nhiên trong khi tồn tại
+            setInterval(() => {
+                const moveX = (Math.random() - 0.5) * 200; // Di chuyển ngẫu nhiên theo trục X
+                const moveY = (Math.random() - 0.5) * 200; // Di chuyển ngẫu nhiên theo trục Y
+                icon.style.transform = `translate(${moveX}px, ${moveY}px)`; // Thay đổi vị trí
+            }, 500); // Thay đổi vị trí mỗi nửa giây
+
+            // Biến mất và xóa icon sau khi hoàn tất
+            setTimeout(() => {
+                icon.style.opacity = 0; // Biến mất
+                setTimeout(() => {
+                    icon.remove();
+                }, 500); // Thời gian chờ trước khi xóa
+            }, duration * 1000);
+        }
+
+        function showText() {
+            const text = document.createElement('div');
+            text.className = 'text';
+            text.textContent = texts[textIndex]; // Chọn chữ hiện tại
+            
+            const { x, y } = randomPosition(); // Lấy vị trí ngẫu nhiên
+            text.style.left = `${x}px`; // Đặt vị trí ngẫu nhiên
+            text.style.top = `${y}px`; // Đặt vị trí ngẫu nhiên
+            text.style.color = '#FFB6C1'; // Màu hồng nhạt
+            document.body.appendChild(text);
+
+            // Bắt đầu hiệu ứng cho chữ
+            setTimeout(() => {
+                text.style.opacity = 1; // Hiện chữ
+            }, 10); // Delay nhỏ để đảm bảo hiệu ứng bắt đầu sau khi thêm vào DOM
+
+            // Biến mất sau một thời gian
+            setTimeout(() => {
+                text.style.opacity = 0; // Biến mất
+                setTimeout(() => {
+                    text.remove(); // Xóa khỏi DOM
+                }, 500); // Thời gian chờ trước khi xóa
+            }, 3000); // Hiển thị chữ trong 3 giây
+
+            textIndex = (textIndex + 1) % texts.length; // Cập nhật chỉ số chữ
+        }
+
+        function createIcons(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(createIcon, i * 100); // Thêm thời gian delay giữa mỗi icon
+            }
+        }
+
+        document.body.addEventListener('click', () => {
+            createIcons(50); // Số lượng icon xuất hiện mỗi lần nhấp
+            showText(); // Hiện chữ khi nhấp
+        });
+    </script>
+</body>
+</html>
